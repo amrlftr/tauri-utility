@@ -43,80 +43,71 @@
 	</app-content>
 </template>
 
-<script>
+<script setup>
 	import AppContent from '../layouts/AppContent.vue';
+	import { ref, computed } from 'vue';
 
-  export default {
-		components: {
-			AppContent,
-		},
-    data() {
-      return {
-        todos: [
-          '#SQLite Integration',
-          'To do list (each list will have a config whether is a simple list or detailed one)',
-          '#Count how many data separated by delimiter / character count / get unique value from duplicated value ie [ 64, 64, 5, 5, 5, 64, 64, 64, 5, 5]',
-          'Save profile including data, template, all the settings in duplicator mutator',
-          '#Text case changed to Text manipulation',
-          'Ability to highlight/replace word in text manipulation',
-          'Navigation from text case to duplication mutator while carrying data',
-          '#Keyboard accessibility, ie esc button go to home',
-          'Settings menu, set window size',
-          '#Settings, choose menu to show in dashboard',
-          '#Default delimiter ,',
-          '#Notepad like to hold temporary code',
-          "#add $table->string('group_code')->nullable(); to duplication mutator",
-          "#add '{x}' => 'required|string', to duplication mutator",
-          "#add paste button in text case to paste content in clipboard",
-          "#settimeout copy",
-          "#readonly result so that user didnt keyin any input",
-          "mutator remove any string matches ie remove any mention of $request",
-          "#text case exclude certain strings from being changed",
-          "#order wip by incomplete first",
-          "#debounce from watch to computed in mutator",
-          "Toast notifications",
-          "#Task management",
-          "Ability to save quick notes",
-					"Focus variant on input fields",
-					"#Prompt confirmation before closing window",
-					"Optional row height in quick notes (maybe add as settings, trigger slide pane from right)",
-					"#[BUG] quick notes reset all notes content when adding new note",
-					"Remove and replace dayjs dependencies with vanilla js",
-					"Export/import sqlite database",
-					"#[BUG] hide add to do when in create new mode (as there is no id to indicate as foreign key)",
-					"Auto update app feature",
-					"#Optional due date in task",
-					"Unique value in text manipulation should have some space so that it didn't stretch out",
-					"Count number of words while typing in text manipulation",
-					"JSON Formatter / Minify / Sorter",
-        ]
-      }
-    },
-		methods: {
-			labelTodo(todo){
-				if(todo.charAt(0) !== '#'){
-					if(todo.includes((['[BUG]']))){
-						return `<span class="text-red-400 bg-red-200 px-2 rounded-md">BUG</span> ${ todo.substring(5) }`;
-					}
-					
-					return todo;
-				}
-				
-				return todo.substring(1);
+	let todos = ref([
+		'#SQLite Integration',
+		'To do list (each list will have a config whether is a simple list or detailed one)',
+		'#Count how many data separated by delimiter / character count / get unique value from duplicated value ie [ 64, 64, 5, 5, 5, 64, 64, 64, 5, 5]',
+		'Save profile including data, template, all the settings in duplicator mutator',
+		'#Text case changed to Text manipulation',
+		'Ability to highlight/replace word in text manipulation',
+		'Navigation from text case to duplication mutator while carrying data',
+		'#Keyboard accessibility, ie esc button go to home',
+		'Settings menu, set window size',
+		'#Settings, choose menu to show in dashboard',
+		'#Default delimiter ,',
+		'#Notepad like to hold temporary code',
+		"#add $table->string('group_code')->nullable(); to duplication mutator",
+		"#add '{x}' => 'required|string', to duplication mutator",
+		"#add paste button in text case to paste content in clipboard",
+		"#settimeout copy",
+		"#readonly result so that user didnt keyin any input",
+		"mutator remove any string matches ie remove any mention of $request",
+		"#text case exclude certain strings from being changed",
+		"#order wip by incomplete first",
+		"#debounce from watch to computed in mutator",
+		"Toast notifications",
+		"#Task management",
+		"Ability to save quick notes",
+		"Focus variant on input fields",
+		"#Prompt confirmation before closing window",
+		"Optional row height in quick notes (maybe add as settings, trigger slide pane from right)",
+		"#[BUG] quick notes reset all notes content when adding new note",
+		"Remove and replace dayjs dependencies with vanilla js",
+		"Export/import sqlite database",
+		"#[BUG] hide add to do when in create new mode (as there is no id to indicate as foreign key)",
+		"Auto update app feature",
+		"#Optional due date in task",
+		"Unique value in text manipulation should have some space so that it didn't stretch out",
+		"Count number of words while typing in text manipulation",
+		"JSON Formatter / Minify / Sorter",
+	]);
+
+	function labelTodo(todo){
+		if(todo.charAt(0) !== '#'){
+			if(todo.includes((['[BUG]']))){
+				return `<span class="text-red-400 bg-red-200 px-2 rounded-md">BUG</span> ${ todo.substring(5) }`;
 			}
-		},
-    computed: {
-      filteredTodos(){
-        return JSON.parse(JSON.stringify(this.todos)).sort((a, b) => {
-          if (a.charAt(0) !== '#' && b.charAt(0) === '#')
-            return -1;
 
-          if (a.charAt(0) === '#' && b.charAt(0) !== '#')
-            return 1;
+			return todo;
+		}
 
-          return 0;
-        });
-      }
-    }
-  };
+		return todo.substring(1);
+	}
+
+	const filteredTodos = computed(() => {
+		return JSON.parse(JSON.stringify(todos.value)).sort((a, b) => {
+			if (a.charAt(0) !== '#' && b.charAt(0) === '#')
+					return -1;
+
+			if (a.charAt(0) === '#' && b.charAt(0) !== '#')
+					return 1;
+
+			return 0;
+		});
+	})
+
 </script>
