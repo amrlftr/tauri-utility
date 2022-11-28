@@ -10,10 +10,17 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.4",
+    "@heroicons/vue": "^2.0.13",
+    "@highlightjs/vue-plugin": "^2.1.0",
     "@tauri-apps/api": "^1.2.0",
+    "highlight.js": "^11.6.0",
+    "lodash": "^4.17.21",
+    "pinia": "^2.0.24",
     "tauri-plugin-sqlite-api": "github:lzdyes/tauri-plugin-sqlite#v0.1.1",
     "vue": "^3.2.37",
-    "vue-router": "^4.1.5"
+    "vue-router": "^4.1.5",
+    "vue-tippy": "^4.16.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.2.0",
