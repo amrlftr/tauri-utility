@@ -3,33 +3,31 @@
 		<div class="max-w-2xl mx-auto py-4 sm:px-6 lg:max-w-5xl lg:px-8">
 			<h1 class="text-2xl font-bold text-center font-serif text-gray-700 py-4">Select any utility tool to begin...</h1>
 			<div class="my-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:gap-8 px-6 sm:px-0">
-				<!-- <router-link
-					v-for="(menu, index) in menus" :key="index" :to="`/${menu.name}`"
-				> -->
-				<div class="group shadow-lg rounded-2xl bg-white cursor-pointer h-full">
-					<div class="px-4 py-5 sm:p-6 flex justify-between">
-						<div>
-							<h3 class="text-2xl leading-6 font-bold text-gray-700 font-serif pt-2">test</h3>
-							<div class="mt-2 max-w-xl text-sm text-gray-500">
-								<p>desc</p>
+				<router-link v-for="(menu, index) in menus" :key="index" :to="`/${menu.name}`">
+					<div class="group shadow-lg rounded-2xl bg-white cursor-pointer h-full">
+						<div class="px-4 py-5 sm:p-6 flex justify-between">
+							<div>
+								<h3 class="text-2xl leading-6 font-bold text-gray-700 font-serif pt-2">{{ menu.title }}</h3>
+								<div class="mt-2 max-w-xl text-sm text-gray-500">
+									<p>{{ menu.subtitle }}</p>
+								</div>
 							</div>
+							<svg
+								class="opacity-0 group-hover:opacity-100 transition ease-in duration-200 w-8 h-8 rounded-full p-1.5 bg-blue-100 text-blue-500"
+								xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+								<path fill-rule="evenodd"
+									d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+									clip-rule="evenodd" />
+							</svg>
 						</div>
-						<svg
-							class="opacity-0 group-hover:opacity-100 transition ease-in duration-200 w-8 h-8 rounded-full p-1.5 bg-blue-100 text-blue-500"
-							xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-							<path fill-rule="evenodd"
-								d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-								clip-rule="evenodd" />
-						</svg>
 					</div>
-				</div>
-				<!-- </router-link> -->
+				</router-link>
 			</div>
 		</div>
 
 		<div class="fixed bottom-4 right-4 text-xs flex items-center space-x-1">
 			<h4 class="italic text-gray-800 mr-2">Authored by Amirul Fitri, {{ new Date().getFullYear() }}</h4>
-			<router-link to="/settings">
+			<router-link to="/"> <!-- to="/settings" -->
 				<svg class="h-5 w-5 p-0.5 rounded-full bg-gray-300 text-gray-500" xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 20 20" fill="currentColor">
 					<path fill-rule="evenodd"
@@ -50,34 +48,13 @@
 </template>
 
 
-<!-- <script setup>
-import Database from 'tauri-plugin-sql-api';
+<script setup>
+import { useMenuStore } from '@/stores/MenuStore';
+import { computed } from 'vue';
 
-// sqlite. The path is relative to `tauri::api::path::BaseDirectory::App`.
-const db = Database.load('sqlite:utility.db')
-console.log(db);
+const menuStore = useMenuStore();
 
-</script> -->
-<script>
-// @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
-// import { mapGetters } from 'vuex';
-import SQLite from 'tauri-plugin-sqlite-api'
-
-export default {
-	name: 'Home',
-	components: {
-		// HelloWorld
-	},
-	async mounted() {
-		const db = await SQLite.open('./utility.db')
-		let res = await db.select(`SELECT * FROM tasks`);
-		console.log(res);
-	},
-	// computed: {
-	// 	...mapGetters({
-	// 		menus: 'settings/activeMenus'
-	// 	})
-	// }
-}
+const menus = computed(() => {
+	return menuStore.activeMenus;
+});
 </script>

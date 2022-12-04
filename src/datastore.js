@@ -1,4 +1,6 @@
-import SQLite from 'tauri-plugin-sqlite-api';
+// import SQLite from 'tauri-plugin-sqlite-api';
+import Database from 'tauri-plugin-sql-api'
+
 
 // let dbPath = process.env.NODE_ENV === 'development'
 //   ? 'd:/dev/electron-utility/src/extra_resources/utility.db'
@@ -6,22 +8,28 @@ import SQLite from 'tauri-plugin-sqlite-api';
 
 class DB {
   async openConnection() {
-    return await SQLite.open('../src/utility.db');
+    return await Database.load('sqlite:utility.db');
   }
 
   async closeConnection(db) {
     return await db.close();
   }
 
-  async select(query) {
+  async select(query, params = []) {
     const db = await this.openConnection();
-    const rows = await db.select(query);
+    const rows = await db.select(query, params);
     await this.closeConnection(db);
 
     return rows;
+  }
+
+  async execute(query, params = []) {
+    const db = await this.openConnection();
+    await db.execute(query, params);
+    await this.closeConnection(db);
   }
 }
 
 const db = new DB();
 
-export default db; 
+export default db;

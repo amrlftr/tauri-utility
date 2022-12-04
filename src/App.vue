@@ -2,6 +2,14 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import Greet from "./components/Greet.vue";
+import { useMenuStore } from '@/stores/MenuStore';
+
+import { onMounted } from 'vue';
+
+onMounted(async () => {
+  const menuStore = useMenuStore();
+  menuStore.load();
+});
 </script>
 
 <template>
