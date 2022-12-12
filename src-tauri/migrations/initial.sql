@@ -19,3 +19,46 @@ INSERT INTO "menus" VALUES (3, 'query', 'Query Builder', 'Generate query stateme
 INSERT INTO "menus" VALUES (4, 'notes', 'Quick Notes', 'Jotting multiple transient notes in one place', 1);
 INSERT INTO "menus" VALUES (5, 'tasks', 'Task Management', 'Manage all upcoming and in progress tasks', 1);
 INSERT INTO "menus" VALUES (6, 'daily-tracker', 'Daily Tracker', 'Keep track of all your daily goals', 1);
+
+-- ----------------------------
+-- Table structure for mutator_templates
+-- ----------------------------
+DROP TABLE IF EXISTS "mutator_templates";
+CREATE TABLE "mutator_templates" (
+  "id" INTEGER NOT NULL,
+  "code" TEXT,
+  "is_default" integer,
+  PRIMARY KEY ("id")
+);
+
+-- ----------------------------
+-- Records of mutator_templates
+-- ----------------------------
+INSERT INTO "mutator_templates" VALUES (1, 'console.log({x});', 1);
+INSERT INTO "mutator_templates" VALUES (2, '{x} => $request->{x},', 0);
+INSERT INTO "mutator_templates" VALUES (3, '$table->string(''{x}'')->nullable();', 0);
+INSERT INTO "mutator_templates" VALUES (4, '''{x}'' => ''required|string'',', 0);
+
+-- ----------------------------
+-- Table structure for tasks
+-- ----------------------------
+DROP TABLE IF EXISTS "tasks";
+CREATE TABLE "tasks" (
+  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "title" TEXT,
+  "desc" TEXT,
+  "status" TEXT,
+  "priority" TEXT,
+  "due_date" TEXT
+);
+
+-- ----------------------------
+-- Table structure for task_todos
+-- ----------------------------
+DROP TABLE IF EXISTS "task_todos";
+CREATE TABLE "task_todos" (
+  "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "name" TEXT,
+  "is_done" integer,
+  "task_id" INTEGER
+);

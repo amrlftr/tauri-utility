@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import SQLite from 'tauri-plugin-sqlite-api';
 import db from '@/datastore';
 
 export const useMenuStore = defineStore('MenuStore', {
@@ -16,7 +15,7 @@ export const useMenuStore = defineStore('MenuStore', {
     async setMenus() {
       const menus = [];
 
-      let rows = await db.select("SELECT * FROM menus WHERE name NOT IN ('query')");
+      let rows = await db.select("SELECT * FROM menus WHERE name NOT IN ('query', 'daily-tracker')");
 
       rows.forEach((row) => {
         menus.push(row);

@@ -4,15 +4,40 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path: '/', 
+      path: '/',
       name: 'Home',
       component: () => import('../views/Home.vue'),
     },
     {
-      path: '/wip', 
+      path: '/wip',
       name: 'Wip',
       component: () => import('../views/Wip.vue'),
-    }
+    },
+    {
+      path: '/mutator',
+      name: 'Mutator',
+      component: () => import('../views/Mutator.vue')
+    },
+    {
+      path: '/text',
+      name: 'Text',
+      component: () => import('../views/Text.vue')
+    },
+    {
+      path: '/notes',
+      name: 'Notes',
+      component: () => import('../views/Notes.vue')
+    },
+    {
+      path: '/tasks',
+      name: 'tasks',
+      component: () => import('../views/Tasks.vue')
+    },
+    // {
+    //   path: '/tasks-archived',
+    //   name: 'tasks-archived',
+    //   component: () => import('../views/TasksArchived.vue')
+    // },
   ]
 });
 
