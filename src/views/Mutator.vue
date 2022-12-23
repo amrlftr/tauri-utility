@@ -38,9 +38,9 @@
     </div>
 
     <div
-      :class="{ 'flex flex-col md:flex-row': selectedMode === 'Single Mode' }"
+      :class="{ 'flex flex-col md:flex-row': selectedMode === 'single' }"
       class="max-w-full lg:max-w-5xl lg:mx-auto mx-6 py-2 px-6 bg-white rounded-2xl border-2 border-gray-200">
-      <div v-show="selectedMode === 'Single Mode'" class="w-full p-4 space-y-4">
+      <div v-show="selectedMode === 'single'" class="w-full p-4 space-y-4" style="min-width: 0;">
         <div>
           <div class="flex items-center justify-between">
             <h4 class="font-bold text-xl font-serif">
@@ -48,8 +48,7 @@
             </h4>
             <paste-button @onPaste="originalData = $event" />
           </div>
-          <input type="text" class="appearance-none outline-none bg-transparent border-b border-gray-700 w-full"
-            v-model="originalData">
+          <ut-textarea v-model="originalData" />
           <h6 class="text-xs text-right pt-1">Separated by comma</h6>
         </div>
 
@@ -60,7 +59,13 @@
             </h4>
           </div>
 
-          <ut-textarea v-model="code" />
+          <codemirror
+            v-model="code"
+            :extensions="[html(), oneDark]"
+            :indent-with-tab="true"
+            :tab-size="2"
+          />
+
         </div>
 
         <div>
@@ -81,7 +86,7 @@
             </ut-button>
           </div>
           <div class="space-y-2">
-            <div v-for="template in templates" :key="template.id" class="flex items-start justify-between">
+            <div v-for="template in filteredTemplates" :key="template.id" class="flex items-start justify-between">
               <div class="flex items-start">
                 <input @click="changeTemplate($event)" name="radioButton" type="radio" :id="template.id"
                   :value="template.code"
@@ -119,7 +124,7 @@
         </accordion>
       </div>
 
-      <div v-show="selectedMode === 'Multiple Mode'" class="w-full p-4 space-y-4">
+      <div v-show="selectedMode === 'multiple'" class="w-full p-4 space-y-4">
         <div>
           <div class="flex items-center justify-between">
             <h4 class="font-bold text-xl font-serif">
@@ -210,7 +215,13 @@
             </h4>
           </div>
 
-          <ut-textarea v-model="codeMultiple" />
+          <codemirror
+            v-model="codeMultiple"
+            :extensions="[html(), oneDark]"
+            :indent-with-tab="true"
+            :tab-size="2"
+          />
+
         </div>
 
         <div>
@@ -230,6 +241,23 @@
               New Template
             </ut-button>
           </div>
+          <div class="space-y-2">
+            <div v-for="template in filteredTemplates" :key="template.id" class="flex items-start justify-between">
+              <div class="flex items-start">
+                <input @click="changeTemplateMultiple($event)" name="radioButton" type="radio" :id="template.id"
+                  :value="template.code"
+                  class="mt-1 appearance-none cursor-pointer checked:bg-yellow-500 ring-1 ring-gray-400 checked:ring-yellow-500 ring-offset-2 h-2 w-2 rounded-full">
+                <label :for="template.id" class="ml-3 my-0 whitespace-pre-line leading-none">{{ template.code }}</label>
+              </div>
+              <svg @click="deleteTemplate(template.id)" xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 rounded-full bg-red-100 p-0.5 text-red-500 cursor-pointer" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -241,7 +269,13 @@
           <copy-button :text="mutatedData" :is-disabled="mutatedData.length === 0" />
         </div>
         <div>
-          <hljs-vue-plugin.component language="js" :code="mutatedData" />
+          <codemirror
+            v-model="mutatedData"
+            :disabled="true"
+            :extensions="[html(), oneDark]"
+            :indent-with-tab="true"
+            :tab-size="2"
+          />
         </div>
       </div>
     </div>
@@ -262,11 +296,12 @@
 			</template> -->
       <ut-textarea v-model="newTemplate" />
     </modal>
+
   </app-content>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import CopyButton from '@/components/CopyButton.vue';
 import PasteButton from '@/components/PasteButton.vue';
 import Accordion from '@/components/Accordion.vue';
@@ -277,20 +312,24 @@ import UtButton from '@/components/form_elements/Button.vue';
 import SliderSelect from '@/components/form_elements/SliderSelect.vue';
 import AppContent from '@/components/layouts/AppContent.vue';
 import db from '@/datastore';
-import 'highlight.js/styles/nord.css';
-import 'highlight.js/lib/common';
-import hljsVuePlugin from "@highlightjs/vue-plugin";
 import { useDebounce } from '@/composables/debounce.js';
 import { Bars3Icon, XMarkIcon, TrashIcon, PlusSmallIcon } from '@heroicons/vue/24/outline';
+import { Codemirror } from 'vue-codemirror';
+import { html } from "@codemirror/lang-html";
+import { oneDark } from '@codemirror/theme-one-dark';
 
 const { debounce } = useDebounce();
 
-let selectedMode = ref('Single Mode');
+let selectedMode = ref('');
 let dataSourceMultiples = ref([
   ['']
 ]);
 let keywordMultiples = ref(['{x1}']);
 let codeMultiple = ref('console.log({x1});')
+
+const changeTemplateMultiple = (el) => {
+  codeMultiple.value = el.target.value;
+}
 
 const addDataSourceMultiple = () => {
   dataSourceMultiples.value.push(
@@ -399,14 +438,15 @@ const fetchTemplate = async () => {
   rows.forEach((row) => {
     templates.value.push({
       id: row.id,
-      code: row.code
+      code: row.code,
+      type: row.type
     });
   })
 }
 
 const addTemplate = async () => {
   try {
-    await db.execute("INSERT INTO mutator_templates (code, is_default) VALUES (?1, ?2)", [newTemplate.value, 0]);
+    await db.execute("INSERT INTO mutator_templates (code, type, is_default) VALUES (?1, ?2, ?3)", [newTemplate.value, selectedMode.value, 0]);
 
     await fetchTemplate();
     templateActionModal.value.hide();
@@ -424,4 +464,8 @@ const deleteTemplate = async (id) => {
     alert(err);
   }
 }
+
+const filteredTemplates = computed(() => {
+  return templates.value.filter((template) => template.type === selectedMode.value);
+});
 </script>

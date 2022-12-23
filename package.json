@@ -10,22 +10,25 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@codemirror/lang-html": "^6.4.0",
+    "@codemirror/theme-one-dark": "^6.1.0",
     "@headlessui/vue": "^1.7.4",
     "@heroicons/vue": "^2.0.13",
-    "@highlightjs/vue-plugin": "^2.1.0",
     "@tauri-apps/api": "^1.2.0",
     "autosize": "^5.0.2",
+    "codemirror": "^6.0.1",
     "dayjs": "^1.11.6",
-    "highlight.js": "^11.6.0",
     "lodash": "^4.17.21",
+    "mermaid": "^9.2.2",
     "pinia": "^2.0.24",
     "tauri-plugin-sql-api": "github:tauri-apps/tauri-plugin-sql#dev",
     "v-calendar": "^3.0.0-alpha.8",
     "vue": "^3.2.37",
+    "vue-codemirror": "^6.1.1",
     "vue-router": "^4.1.5"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.2.0",
+    "@tauri-apps/cli": "^1.2.2",
     "@vitejs/plugin-vue": "^3.0.1",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.19",

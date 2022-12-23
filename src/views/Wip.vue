@@ -88,7 +88,7 @@ let todos = ref([
   "#add paste button in text case to paste content in clipboard",
   "#settimeout copy",
   "#readonly result so that user didnt keyin any input",
-  "mutator remove any string matches ie remove any mention of $request",
+  "Mutator remove any string matches ie remove any mention of $request",
   "#text case exclude certain strings from being changed",
   "#order wip by incomplete first",
   "#debounce from watch to computed in mutator",
@@ -99,7 +99,6 @@ let todos = ref([
   "#Prompt confirmation before closing window",
   "Optional row height in quick notes (maybe add as settings, trigger slide pane from right)",
   "#[BUG] quick notes reset all notes content when adding new note",
-  "Remove and replace dayjs dependencies with vanilla js",
   "Export/import sqlite database",
   "#[BUG] hide add to do when in create new mode (as there is no id to indicate as foreign key)",
   "Auto update app feature",
@@ -114,8 +113,19 @@ let todos = ref([
     - Text manipulation`
   },
   "Proper error popup when sqlite fail",
-  "Add type for Mutator's template list between single mode or multiple mode",
-  "color theme switcher",
+  "#Add type for Mutator's template list between single mode or multiple mode",
+  "Color theme switcher",
+  "Optional modifier in Mutator",
+  "[BUG] Tooltip text not showing",
+  {
+    name: "Achievement badge",
+    desc: `- Kickstarter
+    - Bug Smasher
+    - Bounty Hunter
+    - Unstoppable
+    - Highborn
+    `
+  },
 ]);
 
 function labelTodo(todo) {
