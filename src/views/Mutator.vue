@@ -31,10 +31,16 @@
 
     <div class="mb-5">
       <slider-select
-        :datalist="['Single Mode', 'Multiple Mode']"
+        :datalist="[{
+          id: 'single',
+          desc: 'Single Mode'
+        }, {
+          id: 'multiple',
+          desc: 'Multiple Mode'
+        }]"
         v-model="selectedMode"
+        @onChange="mutatedData = ''"
       />
-      <!-- @onChange="defaultSwitcher()" -->
     </div>
 
     <div
