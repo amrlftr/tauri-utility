@@ -267,7 +267,7 @@
         </div>
       </div>
 
-      <div class="w-full p-4">
+      <div class="w-full p-4" style="min-width: 0;">
         <div class="flex items-center justify-between">
           <h4 class="font-bold text-xl font-serif">
             Result

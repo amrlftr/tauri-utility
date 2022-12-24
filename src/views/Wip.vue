@@ -92,7 +92,7 @@ let todos = ref([
   "#text case exclude certain strings from being changed",
   "#order wip by incomplete first",
   "#debounce from watch to computed in mutator",
-  "Toast notifications",
+  "#Toast notifications",
   "#Task management",
   "Ability to save quick notes",
   "Focus variant on input fields",
@@ -116,7 +116,7 @@ let todos = ref([
   "#Add type for Mutator's template list between single mode or multiple mode",
   "Color theme switcher",
   "Optional modifier in Mutator",
-  "[BUG] Tooltip text not showing",
+  "#[BUG] Tooltip text not showing",
   {
     name: "Achievement badge",
     desc: `- Kickstarter
@@ -126,6 +126,8 @@ let todos = ref([
     - Highborn
     `
   },
+  "Dynamic codemirror language highlighting",
+  "Add confirmation dialog before close app",
 ]);
 
 function labelTodo(todo) {

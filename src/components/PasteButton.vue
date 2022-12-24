@@ -1,33 +1,38 @@
 <template>
-  <ut-button @click="paste()" @shown="setTimeoutHide" :is-disabled="isDisabled">
+  <ut-button
+    v-tippy="{ content: 'Pasted!', trigger: 'click', onShown(instance) {
+      setTimeoutHide(instance);
+    }}"
+    @click="paste()"
+    :is-disabled="isDisabled"
+  >
     Paste
   </ut-button>
 </template>
 
-<script>
+<script setup>
 import UtButton from '@/components/form_elements/Button.vue';
 
-export default {
-  components: {
-    UtButton,
-  },
-  props: {
-    isDisabled: {
-      type: Boolean,
-      default: false,
-    }
-  },
-  methods: {
-    paste() {
-      navigator.clipboard.readText()
-        .then((text) => {
-          this.$emit('onPaste', text)
-        })
-    },
-    setTimeoutHide(el) {
-      setTimeout(function () { el.hide(); }, 2000);
-    }
+const props = defineProps({
+  isDisabled: {
+    type: Boolean,
+    default: false,
   }
+});
+
+const emit = defineEmits(['onPaste']);
+
+const paste = () => {
+  navigator.clipboard.readText()
+    .then((text) => {
+      emit('onPaste', text);
+    })
+}
+
+const setTimeoutHide = (instance) => {
+  setTimeout(() => {
+    instance.hide();
+  }, 1000);
 }
 </script>
 <style>

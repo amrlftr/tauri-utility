@@ -1,34 +1,37 @@
 <template>
-  <ut-button @click="copyToClipboard($event)" @shown="setTimeoutHide" :is-disabled="isDisabled">
+  <ut-button
+    v-tippy="{ content: 'Copied!', trigger: 'click', onShown(instance) {
+      setTimeoutHide(instance);
+    }}"
+    @click="copyToClipboard($event)"
+    :is-disabled="props.isDisabled"
+  >
     Copy
   </ut-button>
 </template>
 
-<script>
+<script setup>
 import UtButton from '@/components/form_elements/Button.vue';
 
-export default {
-  props: {
-    text: {
-      type: String,
-      default: '',
-    },
-    isDisabled: {
-      type: Boolean,
-      default: false,
-    }
+const props = defineProps({
+  text: {
+    type: String,
+    default: '',
   },
-  components: {
-    UtButton,
-  },
-  methods: {
-    copyToClipboard() {
-      navigator.clipboard.writeText(this.text);
-    },
-    setTimeoutHide(el) {
-      setTimeout(function () { el.hide(); }, 2000);
-    }
+  isDisabled: {
+    type: Boolean,
+    default: false,
   }
+});
+
+const copyToClipboard = () => {
+  navigator.clipboard.writeText(props.text);
+}
+
+const setTimeoutHide = (instance) => {
+  setTimeout(() => {
+    instance.hide();
+  }, 1000);
 }
 </script>
 <style>
