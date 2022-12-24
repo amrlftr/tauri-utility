@@ -286,6 +286,8 @@
       </div>
     </div>
 
+    <toast ref="toast"></toast>
+
     <modal
       ref="templateActionModal"
       title="Add New Template"
@@ -323,6 +325,7 @@ import { Bars3Icon, XMarkIcon, TrashIcon, PlusSmallIcon } from '@heroicons/vue/2
 import { Codemirror } from 'vue-codemirror';
 import { html } from "@codemirror/lang-html";
 import { oneDark } from '@codemirror/theme-one-dark';
+import Toast from '@/components/Toast.vue';
 
 const { debounce } = useDebounce();
 
@@ -435,19 +438,27 @@ onMounted(() => {
 let templates = ref([]);
 let newTemplate = ref('');
 const templateActionModal = ref(null);
+const toast = ref(null);
 
 const fetchTemplate = async () => {
-  templates.value = [];
+  try {
+    templates.value = [];
 
-  let rows = await db.select(`SELECT * FROM mutator_templates`);
+    let rows = await db.select(`SELECT * FROM mutator_templates`);
 
-  rows.forEach((row) => {
-    templates.value.push({
-      id: row.id,
-      code: row.code,
-      type: row.type
+    rows.forEach((row) => {
+      templates.value.push({
+        id: row.id,
+        code: row.code,
+        type: row.type
+      });
+    })
+  } catch (err) {
+    toast.value.show({
+      type: 'danger',
+      message: err,
     });
-  })
+  }
 }
 
 const addTemplate = async () => {
@@ -457,8 +468,16 @@ const addTemplate = async () => {
     await fetchTemplate();
     templateActionModal.value.hide();
     newTemplate.value = '';
+
+    toast.value.flash({
+      type: 'success',
+      title: 'Data inserted successfully',
+    });
   } catch (err) {
-    alert(err);
+    toast.value.show({
+      type: 'danger',
+      message: err,
+    });
   }
 }
 
@@ -466,8 +485,16 @@ const deleteTemplate = async (id) => {
   try {
     await db.execute("DELETE FROM mutator_templates WHERE id = ?1", [id]);
     await fetchTemplate();
+
+    toast.value.flash({
+      type: 'success',
+      title: 'Data deleted successfully',
+    });
   } catch (err) {
-    alert(err);
+    toast.value.show({
+      type: 'danger',
+      message: err,
+    });
   }
 }
 
