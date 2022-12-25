@@ -28,7 +28,7 @@
   </div>
 </template>
 <script setup>
-import { ref, defineExpose } from 'vue';
+import { ref } from 'vue';
 import { CheckCircleIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import { XMarkIcon } from '@heroicons/vue/20/solid';
 

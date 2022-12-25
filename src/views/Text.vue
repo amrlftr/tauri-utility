@@ -47,7 +47,7 @@
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-gray-100 rounded-lg">
-          <div v-for="(type, index) in   ['capitalize', 'titlecase', 'lowercase', 'reset']" :key="index"
+          <div v-for="(type, index) in   ['uppercase', 'titlecase', 'lowercase', 'reset']" :key="index"
             @click="type !== 'reset' ? caseType = type : caseType = ''"
             :class="[caseType === type ? 'bg-indigo-600 text-white font-semibold' : 'text-gray-800']"
             class="px-2 py-1 text-center rounded-lg cursor-pointer font-medium capitalize">
@@ -117,7 +117,7 @@ import { useTextCase } from '@/composables/text-case.js';
 // Text Operations
 let originalData = ref('');
 let mutatedData = ref('');
-let caseType = ref('capitalize');
+let caseType = ref('uppercase');
 
 let delimiter = ref(' ');
 let excludes = ref('');

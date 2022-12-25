@@ -1,5 +1,5 @@
 export function useTextCase() {
-  function capitalize(string) {
+  function uppercase(string) {
     return string.toUpperCase();
   }
 
@@ -11,5 +11,5 @@ export function useTextCase() {
     return string.charAt(0).toUpperCase() + string.toLowerCase().slice(1);
   }
 
-  return { capitalize, lowercase, titlecase };
+  return { uppercase, lowercase, titlecase };
 }
