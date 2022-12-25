@@ -111,7 +111,8 @@ import PasteButton from '@/components/PasteButton.vue';
 import Accordion from '@/components/Accordion.vue';
 import Toggle from '@/components/form_elements/Toggle.vue';
 import UtButton from '@/components/form_elements/Button.vue';
-import { useDebounce } from '@/composables/debounce.js'
+import { useDebounce } from '@/composables/debounce.js';
+import { useTextCase } from '@/composables/text-case.js';
 
 // Text Operations
 let originalData = ref('');
@@ -124,18 +125,7 @@ let separator = ref(' ');
 let toggleNewline = ref(false);
 
 const { debounce } = useDebounce();
-
-const textOperations = {
-  capitalize: (string) => {
-    return string.toUpperCase();
-  },
-  lowercase: (string) => {
-    return string.toLowerCase();
-  },
-  titlecase: (string) => {
-    return string.charAt(0).toUpperCase() + string.toLowerCase().slice(1);
-  },
-};
+const textOperations = useTextCase();
 
 const triggerChangeData = debounce(() => {
   let newString = '';
