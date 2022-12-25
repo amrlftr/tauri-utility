@@ -115,7 +115,7 @@ let todos = ref([
   "Proper error popup when sqlite fail",
   "#Add type for Mutator's template list between single mode or multiple mode",
   "Color theme switcher",
-  "Optional modifier in Mutator",
+  "#Optional modifier in Mutator",
   "#[BUG] Tooltip text not showing",
   {
     name: "Achievement badge",

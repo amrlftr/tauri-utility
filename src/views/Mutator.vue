@@ -72,6 +72,11 @@
             :tab-size="2"
           />
 
+          <h6 class="text-xs text-right pt-1">
+            Modifiers are available in
+            <span class="font-semibold text-blue-500">{{ '.' + Object.keys(textOperations).join(' .') }}</span>
+          </h6>
+
         </div>
 
         <div>
@@ -228,6 +233,11 @@
             :tab-size="2"
           />
 
+          <h6 class="text-xs text-right pt-1">
+            Modifiers are available in
+            <span class="font-semibold text-blue-500">{{ '.' + Object.keys(textOperations).join(' .') }}</span>
+          </h6>
+
         </div>
 
         <div>
@@ -321,6 +331,7 @@ import SliderSelect from '@/components/form_elements/SliderSelect.vue';
 import AppContent from '@/components/layouts/AppContent.vue';
 import db from '@/datastore';
 import { useDebounce } from '@/composables/debounce.js';
+import { useTextCase } from '@/composables/text-case.js';
 import { Bars3Icon, XMarkIcon, TrashIcon, PlusSmallIcon } from '@heroicons/vue/24/outline';
 import { Codemirror } from 'vue-codemirror';
 import { html } from "@codemirror/lang-html";
@@ -328,6 +339,7 @@ import { oneDark } from '@codemirror/theme-one-dark';
 import Toast from '@/components/Toast.vue';
 
 const { debounce } = useDebounce();
+const textOperations = useTextCase();
 
 let selectedMode = ref('');
 let dataSourceMultiples = ref([
@@ -368,8 +380,10 @@ const delKeywordMultiple = (index) => {
 
 const triggerChangeDataMultiples = debounce(() => {
   let newString = '';
+  let newStringInner = '';
   let codeCopy = '';
   let regex = null;
+  let operationQueue = [];
 
   for (let i = 0; i < dataSourceMultiples.value.length; i++) {
     codeCopy = codeMultiple.value;
@@ -378,11 +392,28 @@ const triggerChangeDataMultiples = debounce(() => {
       if(keywordMultiples.value[j] === '')
         continue;
 
-      regex = new RegExp(escapeRegExp(keywordMultiples.value[j]), "g"); //is the same as: var regex = /abc/g;
-      codeCopy = codeCopy.replace(regex, dataSourceMultiples.value[i][j].trim());
+      // regex = new RegExp(escapeRegExp(keywordMultiples.value[j]), "g"); //is the same as: var regex = /abc/g;
+      regex = new RegExp(`(${escapeRegExp(keywordMultiples.value[j])}.\s*(?:${Object.keys(textOperations).join('|')}))|(${escapeRegExp(keywordMultiples.value[j])})`, "g");
+      operationQueue = [];
+
+      codeCopy = codeCopy.replace(regex, function (string) {
+        operationQueue = string.split('.').slice(1);
+
+        if(operationQueue.length){
+          newStringInner = '';
+
+          operationQueue.forEach(operation => {
+            newStringInner += textOperations[operation](dataSourceMultiples.value[i][j].trim());
+          });
+
+          return newStringInner;
+        }
+
+        return dataSourceMultiples.value[i][j].trim();
+      });
     }
 
-    newString += codeCopy + '\n';
+    newString += codeCopy + (i+1 !== dataSourceMultiples.value.length ? '\n' : '');
     mutatedData.value = newString;
   }
 }, 1000);
@@ -396,7 +427,7 @@ watch([keywordMultiples, dataSourceMultiples, codeMultiple], () => {
 // Mutator Operation
 let originalData = ref('');
 let mutatedData = ref('');
-let code = ref(`console.log({x});`);
+let code = ref(`console.log({x})`);
 
 let keyword = ref('{x}');
 let delimiter = ref(',');
@@ -412,13 +443,32 @@ const changeTemplate = (el) => {
 
 const triggerChangeData = debounce(() => {
   let newString = '';
+  let newStringInner = '';
   let dataArr = originalData.value.split(delimiter.value);
 
   // generate regex rule
-  let regex = new RegExp(escapeRegExp(keyword.value), "g"); //is the same as: var regex = /abc/g;
+  //let regex = new RegExp(escapeRegExp(keyword.value), "g"); //is the same as: var regex = /abc/g;
+  let regex = new RegExp(`(${escapeRegExp(keyword.value)}.\s*(?:${Object.keys(textOperations).join('|')}))|(${escapeRegExp(keyword.value)})`, "g");
+  let operationQueue = [];
 
-  dataArr.forEach((data) => {
-    newString += code.value.replace(regex, data.trim()) + (toggleNewline.value ? '\n' : '');
+  dataArr.forEach((data, index) => {
+    newString += code.value.replace(regex, function (string) {
+      operationQueue = string.split('.').slice(1);
+
+      if(operationQueue.length){
+        newStringInner = '';
+
+        operationQueue.forEach(operation => {
+          newStringInner += textOperations[operation](data.trim());
+        });
+
+        return newStringInner;
+      }
+
+      return data.trim();
+    });
+
+    newString += toggleNewline.value && ++index !== dataArr.length ? '\n' : '';
   })
 
   mutatedData.value = newString;
