@@ -33,6 +33,11 @@ const router = createRouter({
       name: 'tasks',
       component: () => import('../views/Tasks.vue')
     },
+    {
+      path: '/diagram',
+      name: 'diagram',
+      component: () => import('../views/Diagram.vue')
+    },
     // {
     //   path: '/tasks-archived',
     //   name: 'tasks-archived',
