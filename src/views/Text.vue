@@ -43,7 +43,7 @@
             <div class="absolute -top-1 inset-x-0 bg-white h-2 mx-3"></div>
             <div class="absolute bottom-1 inset-x-0 bg-white h-2 mx-3"></div>
           </div>
-          <h6 class="text-xs text-right">Count: {{ originalData.length }}</h6>
+          <h6 class="text-xs text-right">Count: {{ originalData.length }} Words: {{ originalData.split(' ').filter(word => word !== '').length }}</h6>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-gray-100 rounded-lg">
@@ -159,7 +159,7 @@ const processText = () => {
       .map(item => item.trim())
       .filter((value, index, self) => {
         return self.indexOf(value) === index;
-      }).join(',')}
+      }).join(', ')}
     `;
 }
 </script>

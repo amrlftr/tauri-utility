@@ -95,7 +95,6 @@ let todos = ref([
   "#Toast notifications",
   "#Task management",
   "Ability to save quick notes",
-  "Focus variant on input fields",
   "#Prompt confirmation before closing window",
   "Optional row height in quick notes (maybe add as settings, trigger slide pane from right)",
   "#[BUG] quick notes reset all notes content when adding new note",
@@ -103,8 +102,8 @@ let todos = ref([
   "#[BUG] hide add to do when in create new mode (as there is no id to indicate as foreign key)",
   "Auto update app feature",
   "#Optional due date in task",
-  "Unique value in text manipulation should have some space so that it didn't stretch out",
-  "Count number of words while typing in text manipulation",
+  "#[BUG] Unique value in text manipulation should have some space so that it didn't stretch out",
+  "#Count number of words while typing in text manipulation",
   "JSON Formatter / Minify / Sorter",
   "Theme: Cyberpunk",
   {
@@ -112,7 +111,7 @@ let todos = ref([
     desc: `Some module includes:
     - Text manipulation`
   },
-  "Proper error popup when sqlite fail",
+  "#Proper error popup when sqlite fail",
   "#Add type for Mutator's template list between single mode or multiple mode",
   "Color theme switcher",
   "#Optional modifier in Mutator",
