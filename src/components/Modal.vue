@@ -1,5 +1,5 @@
 <template>
-  <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="relative z-20" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <transition enter-active-class="transition ease-out duration-300" enter-from-class="transform opacity-0"
       enter-to-class="transform opacity-100" leave-active-class="transition ease-in duration-200"
       leave-from-class="transform opacity-10 scale-100" leave-to-class="transform opacity-0">

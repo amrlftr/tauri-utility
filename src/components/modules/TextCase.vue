@@ -1,10 +1,9 @@
 <template>
-  <div
-    class="bg-white">
+  <div class="bg-white rounded-xl">
     <div class="w-full p-4 space-y-4">
       <div class="flex items-center justify-between">
         <h4 class="font-bold text-xl font-serif">
-          Text Case
+          Data
         </h4>
         <paste-button @onPaste="originalData = $event" />
       </div>

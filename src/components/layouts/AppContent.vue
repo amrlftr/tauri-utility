@@ -16,7 +16,7 @@
 
     <slot></slot>
 
-    <TransitionRoot v-if="(sidebarOptions.modules && sidebarOptions.modules.length)" as="template" :show="isSidebarOpen">
+    <TransitionRoot v-if="slots.sidebarContent" as="template" :show="isSidebarOpen">
       <Dialog as="div" class="relative z-10" @close="isSidebarOpen = false">
         <div class="fixed inset-0" />
 
@@ -28,7 +28,7 @@
                   <div class="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
                     <div class="px-4 sm:px-6">
                       <div class="flex items-start justify-between">
-                        <DialogTitle class="text-lg font-medium text-gray-900">Modules</DialogTitle>
+                        <DialogTitle class="text-lg font-medium text-gray-900">Sidebar</DialogTitle>
                         <div class="ml-3 flex h-7 items-center">
                           <button type="button" class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" @click="isSidebarOpen = false">
                             <span class="sr-only">Close panel</span>
@@ -38,7 +38,7 @@
                       </div>
                     </div>
                     <div class="relative mt-6 flex-1 px-4 sm:px-6">
-                      <text-case v-if="sidebarOptions.modules.includes('textcase')" />
+                      <slot name="sidebarContent"></slot>
                     </div>
                   </div>
                 </DialogPanel>
@@ -52,10 +52,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, useSlots } from 'vue';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { XMarkIcon } from '@heroicons/vue/24/outline';
-import TextCase from '@/components/modules/TextCase.vue';
 
 defineProps({
   title: {
@@ -68,7 +67,9 @@ defineProps({
   }
 });
 
-const isSidebarOpen = ref(false);
+const slots = useSlots();
+
+const isSidebarOpen = ref(true);
 
 const triggerSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;

@@ -1,10 +1,44 @@
 <template>
   <app-content
     title="Duplication Mutator"
-    :sidebarOptions="{
-      modules: ['textcase']
-    }"
   >
+    <template #sidebarContent>
+      <accordion title="Text Case">
+        <text-case class="shadow-sm" />
+      </accordion>
+      <accordion title="Template List">
+        <div class="flex items-center justify-end mb-2">
+          <ut-button @click="templateActionModal.show()">
+            <template #icon>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path fill-rule="evenodd"
+                  d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                  clip-rule="evenodd" />
+              </svg>
+            </template>
+            New Template
+          </ut-button>
+        </div>
+        <div class="space-y-2 p-4 bg-white rounded-xl shadow-sm">
+          <div v-for="template in filteredTemplates" :key="template.id" class="flex items-start justify-between">
+            <div class="flex items-start">
+              <input @click="changeTemplateMultiple($event)" name="radioButton" type="radio" :id="template.id"
+                :value="template.code"
+                class="mt-1 appearance-none cursor-pointer checked:bg-yellow-500 ring-1 ring-gray-400 checked:ring-yellow-500 ring-offset-2 h-2 w-2 rounded-full">
+              <label :for="template.id" class="ml-3 my-0 whitespace-pre-line leading-none">{{ template.code }}</label>
+            </div>
+            <svg @click="deleteTemplate(template.id)" xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 rounded-full bg-red-100 p-0.5 text-red-500 cursor-pointer" viewBox="0 0 20 20"
+              fill="currentColor">
+              <path fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
+      </accordion>
+    </template>
     <template #leftOptions>
       <router-link to="/">
         <div class="flex items-center">
@@ -79,44 +113,8 @@
 
         </div>
 
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="font-bold text-xl font-serif">
-              Template List
-            </h4>
-            <ut-button @click="templateActionModal.show()">
-              <template #icon>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20"
-                  fill="currentColor">
-                  <path fill-rule="evenodd"
-                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                    clip-rule="evenodd" />
-                </svg>
-              </template>
-              New Template
-            </ut-button>
-          </div>
-          <div class="space-y-2">
-            <div v-for="template in filteredTemplates" :key="template.id" class="flex items-start justify-between">
-              <div class="flex items-start">
-                <input @click="changeTemplate($event)" name="radioButton" type="radio" :id="template.id"
-                  :value="template.code"
-                  class="mt-1 appearance-none cursor-pointer checked:bg-yellow-500 ring-1 ring-gray-400 checked:ring-yellow-500 ring-offset-2 h-2 w-2 rounded-full">
-                <label :for="template.id" class="ml-3 my-0 whitespace-pre-line leading-none">{{ template.code }}</label>
-              </div>
-              <svg @click="deleteTemplate(template.id)" xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 rounded-full bg-red-100 p-0.5 text-red-500 cursor-pointer" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clip-rule="evenodd" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
         <accordion title="Options">
-          <div class="space-y-4">
+          <div class="space-y-4 bg-white rounded-xl p-4 shadow-sm">
             <div class="flex flex-row items-center justify-between">
               <span>Changer Keyword</span>
               <div class="grow-0">
@@ -241,42 +239,6 @@
           </h6>
 
         </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <h4 class="font-bold text-xl font-serif">
-              Template List
-            </h4>
-            <ut-button @click="templateActionModal.show()">
-              <template #icon>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20"
-                  fill="currentColor">
-                  <path fill-rule="evenodd"
-                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                    clip-rule="evenodd" />
-                </svg>
-              </template>
-              New Template
-            </ut-button>
-          </div>
-          <div class="space-y-2">
-            <div v-for="template in filteredTemplates" :key="template.id" class="flex items-start justify-between">
-              <div class="flex items-start">
-                <input @click="changeTemplateMultiple($event)" name="radioButton" type="radio" :id="template.id"
-                  :value="template.code"
-                  class="mt-1 appearance-none cursor-pointer checked:bg-yellow-500 ring-1 ring-gray-400 checked:ring-yellow-500 ring-offset-2 h-2 w-2 rounded-full">
-                <label :for="template.id" class="ml-3 my-0 whitespace-pre-line leading-none">{{ template.code }}</label>
-              </div>
-              <svg @click="deleteTemplate(template.id)" xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 rounded-full bg-red-100 p-0.5 text-red-500 cursor-pointer" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clip-rule="evenodd" />
-              </svg>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="w-full p-4" style="min-width: 0;">
@@ -349,6 +311,7 @@ import { Codemirror } from 'vue-codemirror';
 import { html } from "@codemirror/lang-html";
 import { oneDark } from '@codemirror/theme-one-dark';
 import Toast from '@/components/Toast.vue';
+import TextCase from '@/components/modules/TextCase.vue';
 
 // Global
 const { debounce } = useDebounce();

@@ -27,6 +27,7 @@ INSERT INTO "menus" VALUES (7, 'diagram', 'Diagram', 'Create dynamic data visual
 DROP TABLE IF EXISTS "mutator_templates";
 CREATE TABLE "mutator_templates" (
   "id" INTEGER NOT NULL,
+  "title" TEXT,
   "code" TEXT,
   "type" TEXT NOT NULL,
   "is_default" integer,
@@ -36,11 +37,11 @@ CREATE TABLE "mutator_templates" (
 -- ----------------------------
 -- Records of mutator_templates
 -- ----------------------------
-INSERT INTO "mutator_templates" VALUES (1, 'console.log({x});', 'single', 1);
-INSERT INTO "mutator_templates" VALUES (2, '{x} => $request->{x},', 'single', 0);
-INSERT INTO "mutator_templates" VALUES (3, '$table->string(''{x}'')->nullable();', 'single', 0);
-INSERT INTO "mutator_templates" VALUES (4, '''{x}'' => ''required|string'',', 'single', 0);
-INSERT INTO "mutator_templates" VALUES (5, 'console.log({x1});', 'multiple', 0);
+INSERT INTO "mutator_templates" VALUES (1, 'console.log', 'console.log({x});', 'single', 1);
+-- INSERT INTO "mutator_templates" VALUES (2, '', '{x} => $request->{x},', 'single', 0);
+-- INSERT INTO "mutator_templates" VALUES (3, '$table->string(''{x}'')->nullable();', 'single', 0);
+-- INSERT INTO "mutator_templates" VALUES (4, '''{x}'' => ''required|string'',', 'single', 0);
+INSERT INTO "mutator_templates" VALUES (2, 'console.log', 'console.log({x1});', 'multiple', 1);
 
 -- ----------------------------
 -- Table structure for tasks

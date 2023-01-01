@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="z-10">
     <div @click="isShow = !isShow" class="hover:bg-gray-100 transition ease-in duration-200 cursor-pointer text-lg font-medium py-2 flex items-center justify-between border-b-2 border-gray-300">
       <h4 class="font-bold text-xl font-serif">{{ title }}</h4>
 			<div class="flex items-center space-x-2">
@@ -13,7 +13,7 @@
     <transition enter-active-class="transition ease-out duration-300" enter-from-class="transform opacity-0 scale-95"
       enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-100"
       leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
-      <div v-show="isShow" class="p-4 bg-gray-100 rounded-b-xl">
+      <div v-show="isShow" class="p-4 bg-gray-50 rounded-b-xl">
         <slot></slot>
       </div>
     </transition>
