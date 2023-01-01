@@ -21,7 +21,7 @@
           </ut-button>
         </div>
         <div class="space-y-2 p-4 bg-white rounded-xl shadow-sm">
-          <div v-for="template in filteredTemplates" :key="template.id">
+          <div v-for="template in filteredTemplates" :key="`template-${template.id}`">
             <div class="font-bold text-gray-500 mb-1">{{ template.title }}</div>
             <div class="flex items-start justify-between">
               <div class="flex items-start">
@@ -96,7 +96,7 @@
               </h4>
               <paste-button @onPaste="dataSource = $event" />
             </div>
-            <ut-textarea v-model="dataSource" />
+            <ut-textarea v-model="dataSource" :disabled="isSingleModeDistinct" />
             <h6 class="text-xs text-right pt-1">Separated by comma</h6>
           </div>
         </template>
@@ -188,17 +188,75 @@
             <h4 class="font-bold text-xl font-serif">
               Active Template
             </h4>
+            <div v-show="selectedMode === 'single'" class="flex flex-row items-center">
+              <span class="text-sm mr-2">Distinct</span>
+              <toggle v-model="isSingleModeDistinct" />
+            </div>
           </div>
-          <codemirror
-            v-model="code"
-            :extensions="[html(), oneDark]"
-            :indent-with-tab="true"
-            :tab-size="2"
-          />
-          <h6 class="text-xs text-right pt-1">
-            Modifiers are available in
-            <span class="font-semibold text-blue-500">{{ '.' + Object.keys(textOperations).join(' .') }}</span>
-          </h6>
+          <template v-if="!isSingleModeDistinct">
+            <codemirror
+              v-model="code"
+              :extensions="[html(), oneDark]"
+              :indent-with-tab="true"
+              :tab-size="2"
+            />
+            <h6 class="text-xs text-right pt-1">
+              Modifiers are available in
+              <span class="font-semibold text-blue-500">{{ '.' + Object.keys(textOperations).join(' .') }}</span>
+            </h6>
+          </template>
+          <template v-else>
+            <table class="min-w-full divide-y divide-gray-300 z-20">
+              <tr v-for="(data, dataIndex) in dataSourceDistinct" :key="`dataSourceDistinct-${dataIndex}`">
+                <td class="py-2 text-sm text-gray-500">{{ data.data }}</td>
+                <td class="text-right py-2 pl-3 pr-4 text-sm text-gray-500 sm:pr-6 md:pr-0">
+                  <Menu as="div" class="relative inline-block text-left">
+                    <div>
+                      <MenuButton
+                        class="inline-flex w-full justify-center rounded-md bg-indigo-500 px-2 py-1 text-sm font-medium text-white hover:bg-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:ring-opacity-75"
+                      >
+                        {{ data.operation.title || 'Template'}}
+                        <ChevronDownIcon
+                          class="ml-1 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
+                          aria-hidden="true"
+                        />
+                      </MenuButton>
+                    </div>
+
+                    <transition
+                      enter-active-class="transition duration-100 ease-out"
+                      enter-from-class="transform scale-95 opacity-0"
+                      enter-to-class="transform scale-100 opacity-100"
+                      leave-active-class="transition duration-75 ease-in"
+                      leave-from-class="transform scale-100 opacity-100"
+                      leave-to-class="transform scale-95 opacity-0"
+                    >
+                      <MenuItems
+                        class="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+                      >
+                        <div class="px-1 py-1 max-h-56 overflow-y-scroll">
+                          <div class="p-2">
+                            <ut-input v-model="distinctFilterKeyword" placeholder="Filter" />
+                          </div>
+                          <MenuItem v-for="(template, templateIndex) in filteredTemplates" :key="`template-${dataIndex}-${templateIndex}-${template.id}`" v-slot="{ active }">
+                            <button
+                              @click="setDistinctOperation(dataIndex, template.id)"
+                              :class="[
+                                active ? 'bg-indigo-500 text-white' : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                              ]"
+                            >
+                              {{ template.title }}
+                            </button>
+                          </MenuItem>
+                        </div>
+                      </MenuItems>
+                    </transition>
+                  </Menu>
+                </td>
+              </tr>
+            </table>
+          </template>
         </div>
 
         <accordion v-show="selectedMode === 'single'" title="Options">
@@ -295,6 +353,8 @@ import { html } from "@codemirror/lang-html";
 import { oneDark } from '@codemirror/theme-one-dark';
 import Toast from '@/components/Toast.vue';
 import TextCase from '@/components/modules/TextCase.vue';
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
+import { ChevronDownIcon } from '@heroicons/vue/20/solid'
 
 // Global
 const { debounce } = useDebounce();
@@ -304,7 +364,7 @@ let selectedMode = ref('');
 let code = ref(`console.log({x});`);
 
 const changeTemplate = (el) => {
-    code.value = el.target.value;
+  code.value = el.target.value;
 }
 
 const codeDefaultSwitcher = () => {
@@ -325,6 +385,7 @@ let mutatedData = ref('');
 let keyword = ref('{x}');
 let delimiter = ref(',');
 let toggleNewline = ref(true);
+let isSingleModeDistinct = ref(false);
 
 const escapeRegExp = (string) => {
   return string.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); //make sure that any special character is escaped
@@ -369,11 +430,58 @@ watch([dataSource, keyword, delimiter, toggleNewline, code], () => {
 
   triggerChangeData();
 },{
-  immediate:true
+  immediate:true,
 });
 
-onMounted(() => {
-  fetchTemplate();
+// Single Mode - Distinct
+let dataSourceDistinct = ref([]);
+let distinctFilterKeyword = ref('');
+
+const setDistinctOperation = (index, templateId) => {
+  dataSourceDistinct.value[index].operation = Object.assign({}, filteredTemplates.value.find(template => template.id === templateId))
+}
+
+watch([isSingleModeDistinct], () => {
+  if(isSingleModeDistinct.value === true){
+    dataSourceDistinct.value = [];
+
+    if(dataSource.value !== ''){
+      dataSource.value.split(delimiter.value).forEach(data => {
+        dataSourceDistinct.value.push({
+          data,
+          operation: {}
+        })
+      })
+    }
+  }
+
+  distinctFilterKeyword.value = '';
+},{
+  immediate:true,
+});
+
+const triggerChangeDataDistinct = debounce(() => {
+  let newString = '';
+  let dataArr = dataSourceDistinct.value;
+
+  // generate regex rule
+  let regex = new RegExp(escapeRegExp(keyword.value), "g"); //is the same as: var regex = /abc/g;
+
+  dataArr.forEach((data, index) => {
+    if(!data.operation.id) {
+      return;
+    }
+
+    newString += data.operation.code.replace(regex, data.data.trim()) + (toggleNewline.value && ++index !== dataArr.length ? '\n' : '');
+  })
+
+  mutatedData.value = newString;
+}, 1000);
+
+watch([dataSourceDistinct], () => {
+  triggerChangeDataDistinct();
+},{
+  deep: true,
 });
 
 // Multiple Mode
@@ -381,7 +489,6 @@ let dataSourceMultiples = ref([
   ['']
 ]);
 let keywordMultiples = ref(['{x1}']);
-// let codeMultiple = ref('console.log({x1});')
 
 const addDataSourceMultiple = () => {
   dataSourceMultiples.value.push(
@@ -527,6 +634,17 @@ const deleteTemplate = async (id) => {
 }
 
 const filteredTemplates = computed(() => {
-  return templates.value.filter((template) => template.type === selectedMode.value);
+  let templatesCopy = [];
+
+  templatesCopy = templates.value.filter((template) => template.type === selectedMode.value);
+
+  if(distinctFilterKeyword.value !== '')
+    templatesCopy = templatesCopy.filter((template) => template.title.toLowerCase().includes(distinctFilterKeyword.value));
+
+  return templatesCopy;
+});
+
+onMounted(() => {
+  fetchTemplate();
 });
 </script>

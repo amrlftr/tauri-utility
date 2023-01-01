@@ -3,7 +3,7 @@
     <textarea
       rows="4" @input="updateValue" :value="modelValue"
       class="appearance-none outline-none bg-transparent border border-gray-400 w-full px-4 py-2"
-      :placeholder="props.placeholder"
+      :placeholder="props.placeholder" :disabled="props.disabled"
     ></textarea>
     <div class="absolute -top-1 inset-x-0 bg-white h-2 mx-3"></div>
     <div class="absolute bottom-1 inset-x-0 bg-white h-2 mx-3"></div>
@@ -16,6 +16,10 @@ let props = defineProps({
   placeholder: {
     type: String,
     default: ''
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   },
 });
 

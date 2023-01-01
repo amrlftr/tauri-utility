@@ -127,6 +127,7 @@ let todos = ref([
   },
   "Dynamic codemirror language highlighting",
   "Add confirmation dialog before close app",
+  "[BUG] When filling new template modal, sidebar gets closed.",
 ]);
 
 function labelTodo(todo) {

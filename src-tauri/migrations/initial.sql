@@ -38,10 +38,20 @@ CREATE TABLE "mutator_templates" (
 -- Records of mutator_templates
 -- ----------------------------
 INSERT INTO "mutator_templates" VALUES (1, 'console.log', 'console.log({x});', 'single', 1);
--- INSERT INTO "mutator_templates" VALUES (2, '', '{x} => $request->{x},', 'single', 0);
--- INSERT INTO "mutator_templates" VALUES (3, '$table->string(''{x}'')->nullable();', 'single', 0);
--- INSERT INTO "mutator_templates" VALUES (4, '''{x}'' => ''required|string'',', 'single', 0);
-INSERT INTO "mutator_templates" VALUES (2, 'console.log', 'console.log({x1});', 'multiple', 1);
+INSERT INTO "mutator_templates" VALUES (2, 'String - migrations', "$table->string('{x}', 50)->nullable();", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (3, 'Integer - migrations', "$table->integer('{x}')->unsigned()->nullable();", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (4, 'Float - migrations', "$table->float('{x}', 7, 2)->nullable();", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (5, 'Decimal - migrations', "$table->decimal('{x}', 6, 2)->nullable();", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (6, 'Boolean - migrations', "$table->boolean('{x}')->default(0);", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (7, 'Date - migrations', "$table->date('{x}')->nullable();", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (8, 'Date - migrations', "$table->time('{x}')->nullable();", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (9, 'String - validation', "'{x}' => 'required|string',", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (10, 'Unique - validation', "'{x}' => 'required|string|unique:users',", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (11, 'Array - validation', "'{x}' => 'required|array|min:1',", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (12, 'Default - crud', "'{x}' => $request->{x},", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (13, 'Password - crud', "'{x}' => Hash::make($request->{x}),", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (14, 'Array to String - crud', "'{x}' => implode($request->{x},','),", 'single', 0);
+INSERT INTO "mutator_templates" VALUES (15, 'console.log', 'console.log({x1});', 'multiple', 1);
 
 -- ----------------------------
 -- Table structure for tasks
