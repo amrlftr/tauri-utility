@@ -3,6 +3,7 @@
     <textarea
       rows="4" @input="updateValue" :value="modelValue"
       class="appearance-none outline-none bg-transparent border border-gray-400 w-full px-4 py-2"
+      :placeholder="props.placeholder"
     ></textarea>
     <div class="absolute -top-1 inset-x-0 bg-white h-2 mx-3"></div>
     <div class="absolute bottom-1 inset-x-0 bg-white h-2 mx-3"></div>
@@ -10,8 +11,12 @@
 </template>
 
 <script setup>
-defineProps({
-  modelValue: String
+let props = defineProps({
+  modelValue: String,
+  placeholder: {
+    type: String,
+    default: ''
+  },
 });
 
 const emit = defineEmits(['update:modelValue']);
