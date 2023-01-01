@@ -2,7 +2,7 @@
   <button
     type="button"
     @click="$emit('update:modelValue', !modelValue)"
-    class="flex-shrink-0 group relative rounded-full inline-flex items-center justify-center h-5 w-10 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600"
+    class="flex-shrink-0 group relative rounded-full inline-flex items-center justify-center h-5 w-10 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-600 focus-visible:ring-opacity-75"
     role="switch" aria-checked="false"
   >
     <span aria-hidden="true" class="pointer-events-none absolute bg-white w-full h-full rounded-md"></span>

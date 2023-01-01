@@ -16,19 +16,6 @@
 			</svg>
 		</template>
 
-    <textarea name="" id="input" cols="30" rows="10">
-    sequenceDiagram
-    A->> B: Query
-    B->> C: Forward query
-    Note right of C: Thinking...
-    C->> B: Response
-    B->> A: Forward response
-      </textarea>
-
-    <button @click="testClick">teeasd</button>
-
-    <div id="output"></div>
-
 		<div class="p-4 mx-4 bg-white rounded-2xl border-2 border-gray-200">
 			<div class="space-y-4">
 				<accordion :collapse="false" :title="note.title" v-for="(note, index) in notes" :key="index">
@@ -51,20 +38,6 @@ import AppContent from '@/components/layouts/AppContent.vue';
 // import PasteButton from '@/components/PasteButton.vue';
 // import UtButton from '@/components/form_elements/Button';
 import Accordion from '@/components/Accordion.vue';
-import TextContent from '@/components/test.js'
-import mermaid from 'mermaid/dist/mermaid.esm.min.mjs';
-
-// onMounted(() => {
-  mermaid.initialize({ startOnLoad: false });
-// })
-const testClick = () => {
-  var input = document.getElementById("input");
-  var output = document.getElementById("output");
-
-  mermaid.render('theGraph', input.value, function(svgCode) {
-      output.innerHTML = svgCode;
-  });
-}
 
 let notes =  ref([{
   title: 'Notes 1',

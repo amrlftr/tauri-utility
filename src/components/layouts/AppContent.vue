@@ -69,7 +69,7 @@ defineProps({
 
 const slots = useSlots();
 
-const isSidebarOpen = ref(true);
+const isSidebarOpen = ref(false);
 
 const triggerSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
