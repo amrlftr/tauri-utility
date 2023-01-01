@@ -52,9 +52,9 @@
             <h4 class="font-bold text-xl font-serif">
               Data
             </h4>
-            <paste-button @onPaste="originalData = $event" />
+            <paste-button @onPaste="dataSource = $event" />
           </div>
-          <ut-textarea v-model="originalData" />
+          <ut-textarea v-model="dataSource" />
           <h6 class="text-xs text-right pt-1">Separated by comma</h6>
         </div>
 
@@ -119,13 +119,15 @@
           <div class="space-y-4">
             <div class="flex flex-row items-center justify-between">
               <span>Changer Keyword</span>
-              <input type="text" class="appearance-none outline-none bg-transparent border-b border-gray-700"
-                v-model="keyword">
+              <div class="grow-0">
+                <ut-input v-model="keyword" />
+              </div>
             </div>
             <div class="flex flex-row items-center justify-between">
               <span>Delimiter</span>
-              <input type="text" class="appearance-none outline-none bg-transparent border-b border-gray-700"
-                v-model="delimiter">
+              <div class="grow-0">
+                <ut-input v-model="delimiter" />
+              </div>
             </div>
             <div class="flex flex-row items-center justify-between">
               <span>Newline</span>
@@ -312,7 +314,16 @@
 									<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
 								</svg>
 			</template> -->
-      <ut-textarea v-model="newTemplate" />
+      <div class="mb-2">
+        <ut-input
+          v-model="newTemplate.title"
+          placeholder="Title"
+        />
+      </div>
+      <ut-textarea
+        v-model="newTemplate.code"
+        placeholder="Code"
+      />
     </modal>
 
   </app-content>
@@ -325,6 +336,7 @@ import PasteButton from '@/components/PasteButton.vue';
 import Accordion from '@/components/Accordion.vue';
 import Toggle from '@/components/form_elements/Toggle.vue';
 import UtTextarea from '@/components/form_elements/Textarea.vue';
+import UtInput from '@/components/form_elements/Input.vue';
 import Modal from '@/components/Modal.vue';
 import UtButton from '@/components/form_elements/Button.vue';
 import SliderSelect from '@/components/form_elements/SliderSelect.vue';
@@ -338,10 +350,12 @@ import { html } from "@codemirror/lang-html";
 import { oneDark } from '@codemirror/theme-one-dark';
 import Toast from '@/components/Toast.vue';
 
+// Global
 const { debounce } = useDebounce();
 const textOperations = useTextCase();
-
 let selectedMode = ref('');
+
+// Multiple Mode
 let dataSourceMultiples = ref([
   ['']
 ]);
@@ -424,8 +438,8 @@ watch([keywordMultiples, dataSourceMultiples, codeMultiple], () => {
   deep: true
 });
 
-// Mutator Operation
-let originalData = ref('');
+// Single Mode
+let dataSource = ref('');
 let mutatedData = ref('');
 let code = ref(`console.log({x})`);
 
@@ -444,7 +458,7 @@ const changeTemplate = (el) => {
 const triggerChangeData = debounce(() => {
   let newString = '';
   let newStringInner = '';
-  let dataArr = originalData.value.split(delimiter.value);
+  let dataArr = dataSource.value.split(delimiter.value);
 
   // generate regex rule
   //let regex = new RegExp(escapeRegExp(keyword.value), "g"); //is the same as: var regex = /abc/g;
@@ -474,7 +488,7 @@ const triggerChangeData = debounce(() => {
   mutatedData.value = newString;
 }, 1000);
 
-watch([originalData, keyword, delimiter, toggleNewline, code], () => {
+watch([dataSource, keyword, delimiter, toggleNewline, code], () => {
   triggerChangeData();
 },{
   immediate:true
@@ -486,7 +500,10 @@ onMounted(() => {
 
 // Template CRUD
 let templates = ref([]);
-let newTemplate = ref('');
+let newTemplate = ref({
+  title: '',
+  code: ''
+});
 const templateActionModal = ref(null);
 const toast = ref(null);
 
@@ -513,11 +530,11 @@ const fetchTemplate = async () => {
 
 const addTemplate = async () => {
   try {
-    await db.execute("INSERT INTO mutator_templates (code, type, is_default) VALUES (?1, ?2, ?3)", [newTemplate.value, selectedMode.value, 0]);
+    await db.execute("INSERT INTO mutator_templates (code, type, is_default) VALUES (?1, ?2, ?3)", [newTemplate.value.code, selectedMode.value, 0]);
 
     await fetchTemplate();
     templateActionModal.value.hide();
-    newTemplate.value = '';
+    newTemplate.value.code = '';
 
     toast.value.flash({
       type: 'success',
