@@ -15,7 +15,7 @@ export const useMenuStore = defineStore('MenuStore', {
     async setMenus() {
       const menus = [];
 
-      let rows = await db.select("SELECT * FROM menus WHERE name NOT IN ('query', 'daily-tracker')");
+      let rows = await db.select("SELECT * FROM menus WHERE name NOT IN ('query')");
 
       rows.forEach((row) => {
         menus.push(row);

@@ -38,6 +38,11 @@ const router = createRouter({
       name: 'diagram',
       component: () => import('../views/Diagram.vue')
     },
+    {
+      path: '/daily-tracker',
+      name: 'Daily Tracker',
+      component: () => import('../views/DailyTracker.vue')
+    },
     // {
     //   path: '/tasks-archived',
     //   name: 'tasks-archived',
