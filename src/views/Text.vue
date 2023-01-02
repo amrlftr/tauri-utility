@@ -120,7 +120,7 @@ let mutatedData = ref('');
 let caseType = ref('uppercase');
 
 let delimiter = ref(' ');
-let excludes = ref('');
+let excludes = ref("");
 let separator = ref(' ');
 let toggleNewline = ref(false);
 
@@ -129,12 +129,11 @@ const textOperations = useTextCase();
 
 const triggerChangeData = debounce(() => {
   let newString = '';
-  let dataArr = originalData.value.split(delimiter.value);
+  let regexExclude = new RegExp(`${excludes.value.split(',').join('|')}`, 'gi');
+  let dataArr = originalData.value.replace(regexExclude, '').split(delimiter.value);
 
   dataArr.forEach((string, index) => {
-    newString += (excludes.value.split(',').includes(string)
-      ? string
-      : caseType.value !== ''
+    newString += (caseType.value !== ''
         ? textOperations[caseType.value](string)
         : string
     ).trim() + (toggleNewline.value ? '\n' : dataArr.length !== index + 1 ? separator.value : '');
